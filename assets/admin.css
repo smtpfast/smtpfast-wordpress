@@ -1,0 +1,65 @@
+.smtpfast-wrap .nav-tab-wrapper {
+	margin-bottom: 1em;
+}
+
+.smtpfast-inline-form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin: 0 0 1em;
+}
+
+.smtpfast-status {
+	display: inline-block;
+	margin: 0.5em 0 0;
+	padding: 6px 10px;
+	border-left: 4px solid #dcdcde;
+	background: #fff;
+}
+
+.smtpfast-status-ok {
+	border-left-color: #00a32a;
+}
+
+.smtpfast-status-bad {
+	border-left-color: #d63638;
+}
+
+.smtpfast-status-off {
+	border-left-color: #dba617;
+}
+
+.smtpfast-table {
+	max-width: 1100px;
+	margin-bottom: 1em;
+}
+
+.smtpfast-table code {
+	font-size: 12px;
+}
+
+.smtpfast-badge {
+	display: inline-block;
+	padding: 2px 8px;
+	border-radius: 10px;
+	font-size: 12px;
+	line-height: 1.6;
+	background: #f0f0f1;
+	color: #50575e;
+}
+
+.smtpfast-badge-ok {
+	background: #edfaef;
+	color: #00631b;
+}
+
+.smtpfast-badge-bad {
+	background: #fcf0f1;
+	color: #8a2424;
+}
+
+.smtpfast-badge-wait {
+	background: #fcf9e8;
+	color: #6e4f00;
+}

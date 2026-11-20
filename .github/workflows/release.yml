@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    name: Build the plugin zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check that the tag matches the plugin version
+        run: |
+          version="$(sed -n 's/^ \* Version: *//p' smtpfast.php | head -1)"
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match plugin version $version" >&2
+            exit 1
+          fi
+      - run: bin/build-zip.sh
+      - uses: actions/upload-artifact@v7
+        with:
+          name: smtpfast-${{ github.ref_name }}
+          path: build/smtpfast.zip
+      - name: Attach the zip to a GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" build/smtpfast.zip --title "$GITHUB_REF_NAME" --generate-notes

@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpcs:
+    name: PHPCS
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+          coverage: none
+      - run: composer update --no-interaction --no-progress
+      - run: vendor/bin/phpcs
+
+  phpunit:
+    name: PHPUnit (PHP ${{ matrix.php }}, WP ${{ matrix.wp }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '7.4'
+            wp: '6.4.*'
+          - php: '8.2'
+            wp: '*'
+          - php: '8.4'
+            wp: '*'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli
+          tools: composer
+          coverage: none
+      - name: Install WordPress ${{ matrix.wp }} and the test suite
+        run: |
+          composer require --dev --no-update "johnpbloch/wordpress-core:${{ matrix.wp }}" "wp-phpunit/wp-phpunit:${{ matrix.wp }}"
+          composer update --no-interaction --no-progress --with-all-dependencies
+      - run: vendor/bin/phpunit
+        env:
+          WP_DB_HOST: 127.0.0.1
+          WP_DB_USER: root
+          WP_DB_PASSWORD: root
+          WP_DB_NAME: wordpress_test
+
+  plugin-check:
+    name: Plugin Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the plugin folder
+        run: bin/build-zip.sh
+      - uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: build/smtpfast
+          slug: smtpfast
+          include-experimental: true

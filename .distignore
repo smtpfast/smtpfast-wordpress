@@ -1,0 +1,17 @@
+/.git
+/.github
+/.wordpress-org
+/bin
+/build
+/node_modules
+/tests
+/vendor
+.distignore
+.gitignore
+.phpunit.result.cache
+composer.json
+composer.lock
+phpcs.xml.dist
+phpunit.xml.dist
+README.md
+SECURITY.md
