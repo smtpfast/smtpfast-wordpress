@@ -52,12 +52,17 @@ if (resetUser) {
 
 if (process.env.WAIT_MS) await page.waitForTimeout(Number(process.env.WAIT_MS));
 
-await page.goto(settings);
-await page.screenshot({ path: `${out}/screenshot-1.png`, fullPage: true });
-await page.goto(`${settings}&tab=domains`);
-await page.screenshot({ path: `${out}/screenshot-2.png`, fullPage: true });
-await page.goto(`${settings}&tab=log`);
-await page.screenshot({ path: `${out}/screenshot-3.png`, fullPage: true });
+// Grow the viewport to the page height so the admin menu background reaches the bottom.
+const shoot = async (url, file) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(url);
+  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  await page.setViewportSize({ width: 1280, height: Math.max(900, height) });
+  await page.screenshot({ path: `${out}/${file}` });
+};
+await shoot(settings, 'screenshot-1.png');
+await shoot(`${settings}&tab=domains`, 'screenshot-2.png');
+await shoot(`${settings}&tab=log`, 'screenshot-3.png');
 console.log('LOG', (await page.locator('.smtpfast-table tbody').innerText().catch(() => '')).replace(/\s+\n/g, '\n'));
 
 await browser.close();
