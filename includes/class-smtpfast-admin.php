@@ -99,12 +99,17 @@ final class SMTPfast_Admin {
 	}
 
 	/**
-	 * Shows the last send failure on every admin screen until it is dismissed.
+	 * Shows the last send failure on the Dashboard, the Plugins screen and the
+	 * SMTPfast settings page, until it is dismissed or the next email is sent.
 	 *
 	 * @return void
 	 */
 	public static function failure_notice() {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen || ! in_array( $screen->id, self::notice_screens(), true ) ) {
 			return;
 		}
 		$failure = SMTPfast_Log::last_failure();
@@ -150,6 +155,15 @@ final class SMTPfast_Admin {
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * The admin screens where the failure notice may show.
+	 *
+	 * @return string[]
+	 */
+	public static function notice_screens() {
+		return array( 'dashboard', 'plugins', 'settings_page_' . self::PAGE );
 	}
 
 	/**

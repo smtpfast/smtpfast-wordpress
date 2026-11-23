@@ -243,6 +243,7 @@ class Test_SMTPfast_Admin extends SMTPfast_Test_Case {
 	 */
 	public function test_failure_notice() {
 		wp_set_current_user( $this->admin_id );
+		set_current_screen( 'dashboard' );
 		SMTPfast_Log::record_failure( 'Domain not verified <script>', false );
 
 		ob_start();
@@ -264,11 +265,28 @@ class Test_SMTPfast_Admin extends SMTPfast_Test_Case {
 	 * Subscribers do not see the failure notice.
 	 */
 	public function test_failure_notice_hidden_from_subscribers() {
+		set_current_screen( 'dashboard' );
 		wp_set_current_user( self::factory()->user->create( array( 'role' => 'subscriber' ) ) );
 		SMTPfast_Log::record_failure( 'x', false );
 		ob_start();
 		SMTPfast_Admin::failure_notice();
 		$this->assertSame( '', ob_get_clean() );
+	}
+
+	/**
+	 * The failure notice stays off other admin screens.
+	 */
+	public function test_failure_notice_only_on_its_screens() {
+		wp_set_current_user( $this->admin_id );
+		SMTPfast_Log::record_failure( 'x', false );
+		set_current_screen( 'edit-post' );
+		ob_start();
+		SMTPfast_Admin::failure_notice();
+		$this->assertSame( '', ob_get_clean() );
+		set_current_screen( 'settings_page_smtpfast' );
+		ob_start();
+		SMTPfast_Admin::failure_notice();
+		$this->assertStringContainsString( 'could not send an email', ob_get_clean() );
 	}
 
 	/**
