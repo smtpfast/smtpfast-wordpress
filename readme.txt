@@ -4,7 +4,7 @@ Tags: email, smtp, wp mail, transactional email, email api
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -104,6 +104,9 @@ All plugin settings, the saved API key and the log. A key in `wp-config.php` sta
 3. Email log: the last 100 emails with their live delivery status.
 
 == Changelog ==
+
+= 1.0.1 =
+* The send-failure notice now shows only on the Dashboard, the Plugins screen and the SMTPfast settings page.
 
 = 1.0.0 =
 * First release: sends all `wp_mail()` email through the SMTPfast API, with domain status, a test email, a send log, failure notices and an optional fallback.

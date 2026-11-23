@@ -3,7 +3,7 @@
  * Plugin Name:       SMTPfast
  * Plugin URI:        https://github.com/smtpfast/smtpfast-wordpress
  * Description:       Send every WordPress email through the SMTPfast email API, with domain status, a test email and a send log.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.4
  * Requires PHP:      7.4
  * Author:            SMTPfast
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SMTPFAST_VERSION', '1.0.0' );
+define( 'SMTPFAST_VERSION', '1.0.1' );
 define( 'SMTPFAST_PLUGIN_FILE', __FILE__ );
 define( 'SMTPFAST_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
