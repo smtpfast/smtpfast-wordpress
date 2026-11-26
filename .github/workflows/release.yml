@@ -29,3 +29,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" build/smtpfast.zip --title "$GITHUB_REF_NAME" --generate-notes
+
+  wporg:
+    name: Deploy to WordPress.org
+    needs: zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: bin/build-zip.sh
+      - uses: 10up/action-wordpress-plugin-deploy@54bd289b8525fd23a5c365ec369185f2966529c2 # 2.3.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: smtpfast
+          BUILD_DIR: build/smtpfast
